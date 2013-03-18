@@ -198,13 +198,16 @@
 
 		if ($script == 'env'){
 
-			preg_match('/^\s*(\S+)/', substr($text, $pos), $m);
-			$script = $m[1];
+			if (preg_match('/^\s*(\S+)/', substr($text, $pos), $m)){
+				$script = $m[1];
+			}else{
+				return;
+			}
 		}
-		preg_match('/^([^\d]+)/', $script, $m);
-		$script = $m[1];
+		if (preg_match('/^([^\d]+)/', $script, $m)){
 
-		if ($script) $tokens[] = "SHEBANG#!{$script}";
+			$tokens[] = "SHEBANG#!{$m[1]}";
+		}
 	}
 
 	function classify_extract_sgml_tokens(&$tokens, $text){

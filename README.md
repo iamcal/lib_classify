@@ -1,5 +1,7 @@
 # lib_classify - PHP Language bayesian classifier
 
+[![Build Status](https://travis-ci.org/iamcal/lib_classify.png?branch=master)](https://travis-ci.org/iamcal/lib_classify)
+
 This library is a partial PHP port of Github's [linguist](https://github.com/github/linguist), allowing you to detect
 the language that a given code fragment is written in. It uses a corpus built by linguist to compare input text against
 and can either give you a ranked list of likely languages, or just the best match.

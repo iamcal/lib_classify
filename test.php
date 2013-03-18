@@ -22,10 +22,10 @@ $token_tests = array(
 	array("print 'Hello', '', 'Josh'",		'print'),
 
 	# test_skip_number_literals
-	array('1 + 1',		'+'),
-	array('add(123, 456)',	'add ( )'),
-	array('0x01 | 0x10',	'|'),
-	array('500.42 * 1.0',	'*'),
+	array('1 + 1',			'+'),
+	array('add(123, 456)',		'add ( )'),
+	array('0x01 | 0x10',		'|'),
+	array('500.42 * 1.0',		'*'),
 
 	# test_skip_comments
 	array("foo\n# Comment",		'foo'),
@@ -59,6 +59,29 @@ $token_tests = array(
 	array("1 || 1",		'||'),
 	array("1 < 0x01",	'<'),
 	array("1 << 0x01",	'<<'),
+
+	# test_c_tokens
+	array(file_get_contents('test_files/hello.h'),		'#ifndef HELLO_H #define HELLO_H void hello ( ) ; #endif'),
+	array(file_get_contents('test_files/hello.c'),		'#include <stdio.h> int main ( ) { printf ( ) ; return ; }'),
+
+	# test_cpp_tokens
+	array(file_get_contents('test_files/bar.h'),		'class Bar { protected char *name ; public void hello ( ) ; }'),
+	array(file_get_contents('test_files/hello.cpp'),	'#include <iostream> using namespace std ; int main ( ) { cout << << endl ; }'),
+
+	# test_objective_c_tokens
+	array(file_get_contents('test_files/Foo.h'),		'#import <Foundation/Foundation.h> @interface Foo NSObject { } @end'),
+	array(file_get_contents('test_files/Foo.m'),		'#import @implementation Foo @end'),
+	array(file_get_contents('test_files/hello.m'),		'#import <Cocoa/Cocoa.h> int main ( int argc char *argv [ ] ) { NSLog ( @ ) ; return ; }'),
+
+	# test_javascript_tokens
+	array(file_get_contents('test_files/hello.js'),		'( function ( ) { console.log ( ) ; } ) .call ( this ) ;'),
+
+	# test_json_tokens
+	array(file_get_contents('test_files/product.json'),	'{ [ ] { } }'),
+
+	# test_ruby_tokens
+	array(file_get_contents('test_files/foo.rb'),		'module Foo end'),
+	array(file_get_contents('test_files/Rakefile'),		'task default do puts end'),
 );
 
 foreach ($token_tests as $a){

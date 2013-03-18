@@ -84,9 +84,30 @@ $token_tests = array(
 	array(file_get_contents('test_files/Rakefile'),		'task default do puts end'),
 );
 
+$first_token_tests = array(
+
+	# test_shebang
+	array(file_get_contents('test_files/sh.script'),		'SHEBANG#!sh'),
+	array(file_get_contents('test_files/bash.script'),		'SHEBANG#!bash'),
+	array(file_get_contents('test_files/zsh.script'),		'SHEBANG#!zsh'),
+	array(file_get_contents('test_files/perl.script'),		'SHEBANG#!perl'),
+	array(file_get_contents('test_files/python.script'),		'SHEBANG#!python'),
+	array(file_get_contents('test_files/ruby.script'),		'SHEBANG#!ruby'),
+	array(file_get_contents('test_files/ruby2.script'),		'SHEBANG#!ruby'),
+	array(file_get_contents('test_files/js.script'),		'SHEBANG#!node'),
+	array(file_get_contents('test_files/php.script'),		'SHEBANG#!php'),
+	array(file_get_contents('test_files/invalid-shebang.sh'),	'echo'),
+);
+
 foreach ($token_tests as $a){
 	$tokens = classify_tokenize($a[0]);
 	$flat = implode(' ', $tokens);
 	$name = json_encode($a[0]);
 	is($flat, $a[1], "classify_tokenize($name)");
+}
+
+foreach ($first_token_tests as $a){
+	$tokens = classify_tokenize($a[0]);
+	$name = json_encode($a[0]);
+	is($tokens[0], $a[1], "classify_tokenize($name)[0]");
 }

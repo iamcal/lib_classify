@@ -16,7 +16,6 @@
 
 	function classify_text($text, $count=1){
 
-		$tokens = preg_split('!\s+!', $text);
 		$tokens = classify_tokenize($text);
 
 		foreach ($GLOBALS['_classify_db']['tokens'] as $lang => $junk){
@@ -101,15 +100,17 @@
 		while ($pos < $len && $pos < $byte_limit){
 
 			# shebang
-			if (preg_match('/^#!.+$/m', substr($text, $pos), $m)){
-
+			if (preg_match('/\A#!.+$/m', substr($text, $pos), $m)){
+#echo 1;
 				classify_extract_shebang($tokens, $m[0]);
 				$pos += strlen($m[0]);
 				continue;
 			}
 
 			# single line comments
-			if (preg_match("/^({$single_rx})/m", substr($text, $pos), $m)){
+			if ($pos == 0 || substr($text, $pos-1, 1) == "\n")
+			if (preg_match("/^\s*({$single_rx})/", substr($text, $pos), $m)){
+#echo 2;
 				if (preg_match("/^.*?(\n|\Z)/", substr($text, $pos), $m)){
 					$pos += strlen($m[0]);
 					continue;
@@ -118,7 +119,8 @@
 			}
 
 			# multiline comments
-			if (preg_match("/^({$multi_rx})/m", substr($text, $pos), $m)){
+			if (preg_match("/^({$multi_rx})/", substr($text, $pos), $m)){
+#echo 3;
 				if (preg_match("/^.*?({$multi_map[$m[0]]})/", substr($text, $pos), $m)){
 					$pos += strlen($m[0]);
 					continue;
@@ -129,6 +131,7 @@
 			# single or double quoted strings
 			$ch = substr($text, $pos, 1);
 			if ($ch == "'" || $ch == '"'){
+#echo 4;
 				if ($ch == substr($text, $pos+1, 1)){
 					$pos += 2;
 					continue;
@@ -142,14 +145,14 @@
 
 			# Skip number literals
 			if (preg_match('/\A(0x)?\d(\d|\.)*/m', substr($text, $pos), $m)){
-
+#echo 5;
 				$pos += strlen($m[0]);
 				continue;
 			}
 
 			# SGML style brackets
 			if (preg_match('/\A<[^\s<>][^<>]*>/m', substr($text, $pos), $m)){
-
+#echo 6;
 				classify_extract_sgml_tokens($tokens, $m[0]);
 				$pos += strlen($m[0]);
 				continue;
@@ -157,6 +160,7 @@
 
 			# Common programming punctuation
 			if (preg_match('/\A(;|\{|\}|\(|\)|\[|\])/m', substr($text, $pos), $m)){
+#echo 7;
 				$tokens[] = $m[0];
 				$pos += strlen($m[0]);
 				continue;
@@ -164,6 +168,7 @@
 
 			# Regular token
 			if (preg_match('/\A[\w\.@#\/\*]+/m', substr($text, $pos), $m)){
+#echo 8;
 				$tokens[] = $m[0];
 				$pos += strlen($m[0]);
 				continue;
@@ -171,11 +176,12 @@
 
 			# Common operators
 			if (preg_match('/\A(<<?|\+|\-|\*|\/|%|&&?|\|\|?)/m', substr($text, $pos), $m)){
+#echo 9;
 				$tokens[] = $m[0];
 				$pos += strlen($m[0]);
 				continue;
 			}
-
+#echo 0;
 			$pos++;
 		}
 
@@ -259,9 +265,3 @@
 
 
 	classify_init();
-
-
-	print_r(classify_text('<?php echo "hello" world "foo \\" bar" "b\\"az";'));
-	print_r(classify_text("foo bar // baz!\nquux /* woooo\n\n-->\nsss*/"));
-	print_r(classify_text("#!/usr/bin/perl5.8\nuse strict;"));
-	print_r(classify_text("<html foo bar=\"baz\" woo=1 yay='ttt' />"));

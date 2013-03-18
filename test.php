@@ -3,6 +3,7 @@
 include('testmore.php');
 include('lib_classify.php');
 
+plan(61);
 
 #
 # tokenizer tests adapted from linguist/test/test_tokenizer.rb

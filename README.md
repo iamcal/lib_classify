@@ -21,6 +21,8 @@ and can either give you a ranked list of likely languages, or just the best matc
 
 The more input you feed it, the more accurate your output will be.
 
+The `samples.json` file needs to be somewhere that `lib_classify.php` can read it.
+
 
 ## Implementation
 

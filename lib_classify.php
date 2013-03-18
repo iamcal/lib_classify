@@ -109,7 +109,7 @@
 
 			# single line comments
 			if ($pos == 0 || substr($text, $pos-1, 1) == "\n")
-			if (preg_match("/^\s*({$single_rx})/", substr($text, $pos), $m)){
+			if (preg_match("/^\s*({$single_rx}) /", substr($text, $pos), $m)){
 #echo 2;
 				if (preg_match("/^.*?(\n|\Z)/", substr($text, $pos), $m)){
 					$pos += strlen($m[0]);
